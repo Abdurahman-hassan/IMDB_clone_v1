@@ -252,7 +252,7 @@ class ReviewListMXV(mixins.ListModelMixin,
                     mixins.CreateModelMixin,
                     generics.GenericAPIView):
     """List all reviews."""
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = [ReviewUserOrReadOnly]
 
 
     # These are attributes names and we can't change them
@@ -293,7 +293,7 @@ class ReviewCreateGNV(generics.CreateAPIView):
     """Create a review,
        This class doesn't have a queryset because we don't need to get the reviews.
     """
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = [ReviewUserOrReadOnly]
 
     queryset = Review.objects.none()
     serializer_class = ReviewSerializer
@@ -325,7 +325,7 @@ class ReviewCreateGNV(generics.CreateAPIView):
 class ReviewListGNV(generics.ListAPIView):
     """List all reviews."""
     # ListCreate will give us the get and post methods
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = [ReviewUserOrReadOnly]
 
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -344,12 +344,11 @@ class ReviewListGNV(generics.ListAPIView):
 
 class ReviewDetailGNV(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete a review."""
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = [ReviewUserOrReadOnly]
 
     # RetrieveUpdateDestroy will give us the get, put, delete methods
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [ReviewUserOrReadOnly]
 
     def get_queryset(self):
         watch_list = self.kwargs['watchlist_id']
