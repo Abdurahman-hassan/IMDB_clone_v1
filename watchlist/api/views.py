@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 from rest_framework.views import APIView
 
 from watchlist.api.permissions import (
@@ -16,6 +17,7 @@ from watchlist.api.serializers import (WatchListSerializer,
                                        StreamPlatformSerializer,
                                        ReviewSerializer,
                                        ManualWatchListSerializer)
+from watchlist.api.throttling import ReviewListThrottle, ReviewCreateThrottle
 from watchlist.models import WatchList, StreamPlatform, Review
 from django.http import JsonResponse
 from watchlist.models import WatchList
@@ -326,7 +328,7 @@ class ReviewListGNV(generics.ListAPIView):
     """List all reviews."""
     # ListCreate will give us the get and post methods
     permission_classes = [ReviewUserOrReadOnly]
-
+    throttle_classes = [ReviewListThrottle, AnonRateThrottle]
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
@@ -345,6 +347,7 @@ class ReviewListGNV(generics.ListAPIView):
 class ReviewDetailGNV(generics.RetrieveUpdateDestroyAPIView):
     """Retrieve, update or delete a review."""
     permission_classes = [ReviewUserOrReadOnly]
+    throttle_classes = [ReviewCreateThrottle, AnonRateThrottle]
 
     # RetrieveUpdateDestroy will give us the get, put, delete methods
     # queryset = Review.objects.all()
@@ -363,6 +366,9 @@ class ReviewDetailGNV(generics.RetrieveUpdateDestroyAPIView):
 class StreamPlatformVSV(viewsets.ViewSet):
     """List all stream platforms."""
     permission_classes = [AdminOrReadOnly]
+    # if we define the throttle_classes manually here, it will override the default throttle_classes
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'stream_platform'
 
     def list(self, request):
         queryset = StreamPlatform.objects.all()
