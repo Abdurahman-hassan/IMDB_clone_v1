@@ -138,6 +138,19 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle',
+    # ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/min',
+        'user': '50/day',
+        'review_create': '1/day',
+        'review_list': '5/day',
+        # manual throttle rate
+        'stream_platform': '3/day',
+    },
+
 }
 
 LOGGING = {
