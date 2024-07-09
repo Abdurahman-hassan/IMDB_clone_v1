@@ -152,6 +152,9 @@ REST_FRAMEWORK = {
         'stream_platform': '3/day',
     },
 
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 1,
+
 }
 
 LOGGING = {
