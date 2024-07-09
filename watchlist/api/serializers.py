@@ -81,7 +81,8 @@ class WatchListSerializer(serializers.ModelSerializer):
     # we can add extra fields to the serializer
     len_name = serializers.SerializerMethodField()
     len_description = serializers.SerializerMethodField()
-    reviews = ReviewSerializer(many=True, read_only=True)
+    # reviews = ReviewSerializer(many=True, read_only=True)
+    platform = serializers.CharField(source='platform.name')  # model_name.field_name platform is a foreign key
 
     class Meta:
         model = WatchList
