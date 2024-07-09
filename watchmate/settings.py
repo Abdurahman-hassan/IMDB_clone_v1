@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # Token Authentication with rest_framework.authentication.TokenAuthentication
     'rest_framework_simplejwt',
     'user',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
