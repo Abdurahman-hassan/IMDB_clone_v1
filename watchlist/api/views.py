@@ -1,6 +1,7 @@
 """Views for the API."""
 from django.http import Http404
-from rest_framework import status, generics, viewsets, mixins
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, generics, viewsets, mixins, filters
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -256,7 +257,6 @@ class ReviewListMXV(mixins.ListModelMixin,
     """List all reviews."""
     permission_classes = [ReviewUserOrReadOnly]
 
-
     # These are attributes names and we can't change them
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -299,7 +299,8 @@ class ReviewCreateGNV(generics.CreateAPIView):
 
     queryset = Review.objects.none()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+
+    # permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         # the pk is the watchlist_id
@@ -356,6 +357,24 @@ class ReviewDetailGNV(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         watch_list = self.kwargs['watchlist_id']
         return Review.objects.filter(watchlist=watch_list)
+
+
+class UserReviewGNV(generics.ListAPIView):
+    """List all reviews by a user."""
+    serializer_class = ReviewSerializer
+
+    # permission_classes = [IsAuthenticated]
+    # the django-filter will only work with GenericAPIView
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['reviewer__username', 'active']
+    filter_backends = [filters.SearchFilter]
+
+    def get_queryset(self):
+        username = self.request.query_params.get('username', None)
+        queryset = Review.objects.none()
+        if username is not None:
+            queryset = Review.objects.filter(reviewer__username=username)
+        return queryset
 
 
 ############################################################################################################

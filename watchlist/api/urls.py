@@ -33,7 +33,8 @@ from watchlist.api.views import (
 from watchlist.api.views import (
     ReviewListGNV,
     ReviewCreateGNV,
-    ReviewDetailGNV
+    ReviewDetailGNV,
+    UserReviewGNV
 )
 
 # viewSets
@@ -98,5 +99,6 @@ urlpatterns = [
     path('stream/<int:watchlist_id>/review/', ReviewListGNV.as_view(), name='review-list'),
     # path('stream/<int:watchlist_id>/review/<int:pk>/', ReviewDetailGNV.as_view(), name='review-detail'),
     path('stream/review/<int:pk>/', ReviewDetailGNV.as_view(), name='review-detail'),
+    path('reviews/', UserReviewGNV.as_view(), name='user-review-detail'),
 ]
 urlpatterns += router.urls
