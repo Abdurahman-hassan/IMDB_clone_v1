@@ -31,6 +31,7 @@ from watchlist.api.views import (
 
 # class based views generic class based views with relationships
 from watchlist.api.views import (
+    WatchListCreateGNV,
     ReviewListGNV,
     ReviewCreateGNV,
     ReviewDetailGNV,
@@ -95,10 +96,12 @@ urlpatterns = [
     ##################################################################################
     # generic class based views with relationships
     ##################################################################################
+    path('stream-create/', WatchListCreateGNV.as_view(), name='stream-create'),
     path('stream/<int:watchlist_id>/review-create/', ReviewCreateGNV.as_view(), name='review-create'),
     path('stream/<int:watchlist_id>/review/', ReviewListGNV.as_view(), name='review-list'),
     # path('stream/<int:watchlist_id>/review/<int:pk>/', ReviewDetailGNV.as_view(), name='review-detail'),
     path('stream/review/<int:pk>/', ReviewDetailGNV.as_view(), name='review-detail'),
     path('reviews/', UserReviewGNV.as_view(), name='user-review-detail'),
+
 ]
 urlpatterns += router.urls

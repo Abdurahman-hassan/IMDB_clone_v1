@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 from rest_framework.views import APIView
 
+from watchlist.api.pagination import WatchlistPagination, WatchlistOffsetPagination, WatchlistCursorPagination
 from watchlist.api.permissions import (
     AdminOrReadOnly,
     ReviewUserOrReadOnly
@@ -290,6 +291,23 @@ class ReviewListMXV(mixins.ListModelMixin,
 # we don't need to define the get, post, put, delete methods
 # it will be done automatically because it's inherited the mixins.
 
+# this class for testing purposes only
+class WatchListCreateGNV(generics.ListCreateAPIView):
+    """List all movies or create a new movie."""
+    permission_classes = [AdminOrReadOnly]
+    queryset = WatchList.objects.all()
+    serializer_class = WatchListSerializer
+    # pagination_class = WatchlistPagination
+    # pagination_class = WatchlistOffsetPagination
+    pagination_class = WatchlistCursorPagination  # ordering with time if we choose there created
+    # we must have ordering_field field here
+    # ordering_fields = ['avg_rating', 'created'] # the default ordering
+
+    # we can override the perform_create method to add extra logic
+    def perform_create(self, serializer):
+        # we can add extra logic here
+        serializer.save()
+
 
 class ReviewCreateGNV(generics.CreateAPIView):
     """Create a review,
@@ -368,6 +386,8 @@ class UserReviewGNV(generics.ListAPIView):
     # filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['reviewer__username', 'active']
     filter_backends = [filters.SearchFilter]
+    search_fields = ['reviewer__username', 'active']
+    pagination_class = WatchlistPagination
 
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
