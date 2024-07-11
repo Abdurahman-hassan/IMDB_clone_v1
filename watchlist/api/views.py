@@ -1,7 +1,7 @@
 """Views for the API."""
 from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, generics, viewsets, mixins, filters
+from rest_framework import status, generics, viewsets, mixins, filters, exceptions
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -279,7 +279,10 @@ class ReviewListMXV(mixins.ListModelMixin,
     # the reviewer is not part of the incoming data, but is instead based on the current request.
     def perform_create(self, serializer):
         # sets the reviewer to the currently authenticated user when creating a Review.
-        serializer.save(reviewer=self.request.user)
+        user = self.request.user
+        if not user.is_authenticated:
+            raise exceptions.NotAuthenticated('You need to be authenticated to review')
+        serializer.save(reviewer=user)
 
 
 ############################################################################################################
@@ -321,6 +324,11 @@ class ReviewCreateGNV(generics.CreateAPIView):
     # permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+
+        user = self.request.user
+        if not user.is_authenticated:
+            raise exceptions.NotAuthenticated('You need to be authenticated to review')
+
         # the pk is the watchlist_id
         watchlist_id = self.kwargs['watchlist_id']
         watchlist = WatchList.objects.get(pk=watchlist_id)
