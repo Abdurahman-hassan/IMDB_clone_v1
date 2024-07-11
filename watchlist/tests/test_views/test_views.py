@@ -147,8 +147,8 @@ class ReviewTestCase(APITestCase):
         self.assertEqual(response.status_code, HTTP_401_UNAUTHORIZED)
 
     def test_review_update(self):
-
-        admin_user = User.objects.create_user(username='admin_user', password='testpassword', is_staff=True, is_superuser=True)
+        admin_user = User.objects.create_user(username='admin_user', password='testpassword', is_staff=True,
+                                              is_superuser=True)
         admin_token, _ = Token.objects.get_or_create(user=admin_user)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + admin_token.key)
 
@@ -177,5 +177,5 @@ class ReviewTestCase(APITestCase):
         self.assertEqual(response.data['rating'], 5)
 
     def test_review_user(self):
-        response = self.client.get('/watch/reviews/?username'+self.user.username)
+        response = self.client.get('/watch/reviews/?username' + self.user.username)
         self.assertEqual(response.status_code, 200)
