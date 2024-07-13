@@ -97,10 +97,6 @@ DATABASES = {
         'PASSWORD': env.str("DB_PASSWORD", default="your_local_db_password"),
         'HOST': env.str("DB_HOST", default="127.0.0.1"),
         'PORT': env.str("DB_PORT", default="3306"),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'charset': 'utf8mb4',
-        }
     }
 }
 
