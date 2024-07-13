@@ -22,7 +22,7 @@ env.read_env()
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY")  # Required
+SECRET_KEY = env.str("SECRET_KEY", default="fallback_secret_key_for_local_development")  # Required
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -79,13 +79,27 @@ WSGI_APPLICATION = 'watchmate.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'watchlistDB',
+#         'OPTIONS': {
+#             'read_default_file': '/usr/local/etc/my.cnf',
+#         },
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'watchlistDB',
+        'NAME': env.str("DB_NAME", default="your_local_db_name"),
+        'USER': env.str("DB_USER", default="your_local_db_user"),
+        'PASSWORD': env.str("DB_PASSWORD", default="your_local_db_password"),
+        'HOST': env.str("DB_HOST", default="127.0.0.1"),
+        'PORT': env.str("DB_PORT", default="3306"),
         'OPTIONS': {
-            'read_default_file': '/usr/local/etc/my.cnf',
-        },
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 
