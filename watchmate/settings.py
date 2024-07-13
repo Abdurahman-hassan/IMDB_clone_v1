@@ -92,17 +92,18 @@ WSGI_APPLICATION = 'watchmate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': env.str("DB_NAME", default="your_local_db_name"),
-        'USER': env.str("DB_USER", default="your_local_db_user"),
-        'PASSWORD': env.str("DB_PASSWORD", default="your_local_db_password"),
+        'NAME': env.str("DB_NAME", default="test_db"),
+        'USER': env.str("DB_USER", default="test_user"),
+        'PASSWORD': env.str("DB_PASSWORD", default="test_pass"),
         'HOST': env.str("DB_HOST", default="127.0.0.1"),
         'PORT': env.str("DB_PORT", default="3306"),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'use_pure': True,  # Use TCP instead of socket
+            'unix_socket': None,
         }
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
